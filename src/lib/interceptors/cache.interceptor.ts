@@ -7,6 +7,12 @@ import { mergeMap, take, tap } from 'rxjs/operators';
 import { CacheService } from '../services';
 import { Config, Finder, HTTP_CACHE_CONFIG } from '../providers';
 
+export class InvalidRequestKeyError extends Error {
+  constructor(key: string) {
+    super(`Value ${key} is an invalid key. It must be a string value.`);
+  }
+}
+
 /**
  * Network Cache Interceptor
  * =============================================================================
@@ -55,7 +61,7 @@ export class CacheInterceptor implements HttpInterceptor {
     next: HttpHandler,
     ttl: number
   ): Observable<HttpEvent<any>> {
-    const key: string = this.config.finder.key(req);
+    const key: string = this.getKey(req);
     const cachedResponse: HttpResponse<any> = this.cache.get(key);
 
     if (cachedResponse) {
@@ -69,5 +75,19 @@ export class CacheInterceptor implements HttpInterceptor {
         })
       );
     }
+  }
+
+  private getKey(req: HttpRequest<any>): string {
+    const key: string = this.config.finder.key(req);
+
+    if (key && typeof key === 'string') {
+      return key;
+    } else {
+      throw new InvalidRequestKeyError(key);
+    }
+  }
+
+  private getTtl(req: HttpRequest<any>): number {
+    return this.config.finder.ttl(req);
   }
 }

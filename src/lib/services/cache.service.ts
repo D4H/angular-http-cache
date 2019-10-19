@@ -11,7 +11,7 @@ export interface Cache {
 }
 
 /**
- * Simple Cache Service
+ * Simple Injectable Cache Provider
  * =============================================================================
  */
 
@@ -50,20 +50,9 @@ export class CacheService {
     return this.has(key);
   }
 
-  /**
-   * Check Fragment Expiry
-   * ===========================================================================
-   */
-
   private expired(fragment: Fragment): boolean {
     return fragment && fragment.ttl && fragment.ttl < Date.now();
   }
-
-  /**
-   * Set TTL
-   * ===========================================================================
-   * Add TTL as seconds to current timestamp.
-   */
 
   private expires(ttl?: number): number {
     if (Number.isInteger(ttl)) {
