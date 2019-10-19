@@ -1,0 +1,22 @@
+{
+  "name": "@d4h/angular-http-cache",
+  "version": "1.0.0",
+  "description": "Network caching interceptor for Angular HttpClient.",
+  "homepage": "https://d4htechnologies.com/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/D4H/http-cache"
+  },
+  "author": {
+    "name": "Mark Grealish",
+    "email": "mark.grealish@d4h.org",
+    "url": "https://github.com/orgs/D4H/people"
+  },
+  "keywords": [
+    "angular",
+    "cache",
+    "http-client",
+    "interceptor"
+  ],
+  "license": "MIT"
+}
