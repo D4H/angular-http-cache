@@ -1,6 +1,7 @@
 {
   "name": "@d4h/angular-http-cache",
   "version": "1.0.0",
+  "private": false,
   "description": "Network caching interceptor for Angular HttpClient.",
   "homepage": "https://d4htechnologies.com/",
   "repository": {
@@ -18,5 +19,9 @@
     "http-client",
     "interceptor"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "peerDependencies": {
+    "@angular/common": ">= 7 < 9",
+    "@angular/core": ">= 7 < 9"
+  }
 }
