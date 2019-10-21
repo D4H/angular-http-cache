@@ -6,19 +6,21 @@ import { InjectionToken } from '@angular/core';
  * =============================================================================
  */
 
-export interface Finder {
-  key(req: HttpRequest<any>): string;
-  ttl(req: HttpRequest<any>): number;
+export interface RequestCache {
+  key: string;
+  ttl: number;
 }
 
 export interface Config {
-  finder: Finder;
+  finder(req: HttpRequest<any>): RequestCache;
 }
 
 export const defaultConfig: Config = {
-  finder: {
-    key: (req: HttpRequest<any>) => null,
-    ttl: (req: HttpRequest<any>) => null
+  finder(req: HttpRequest<any>): RequestCache {
+    return {
+      key: null,
+      ttl: null
+    };
   }
 };
 

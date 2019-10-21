@@ -19,25 +19,32 @@ export interface Cache {
 export class CacheService {
   readonly items: Cache = {};
 
-  get(key: string): any {
-    const fragment: Fragment = this.items[key];
+  clear(): any {
+    Object.keys(this.items).forEach(key => this.remove(key));
+    return null;
+  }
 
-    if (this.expired(fragment)) {
-      this.remove(key);
-      return null;
-    } else if (fragment) {
-      return fragment.value;
+  get(key: string): any {
+    if (this.has(key)) {
+      return this.items[key].value;
     } else {
       return null;
     }
   }
 
   has(key: string): boolean {
-    return this.items.hasOwnProperty(key);
+    if (!this.items.hasOwnProperty(key)) {
+      return false;
+    } else if (this.expired(key)) {
+      return this.remove(key);
+    } else {
+      return true;
+    }
   }
 
   remove(key: string): boolean {
-    return delete this.items[key];
+    delete this.items[key];
+    return this.has(key);
   }
 
   set(key: string, value: any, ttl?: number): boolean {
@@ -50,8 +57,8 @@ export class CacheService {
     return this.has(key);
   }
 
-  private expired(fragment: Fragment): boolean {
-    return fragment && fragment.ttl && fragment.ttl < Date.now();
+  private expired(key: string): boolean {
+    return this.items[key].ttl && this.items[key].ttl < Date.now();
   }
 
   private expires(ttl?: number): number {

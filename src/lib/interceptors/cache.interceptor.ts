@@ -5,13 +5,7 @@ import { Observable, of } from 'rxjs';
 import { mergeMap, take, tap } from 'rxjs/operators';
 
 import { CacheService } from '../services';
-import { Config, Finder, HTTP_CACHE_CONFIG } from '../providers';
-
-export class InvalidRequestKeyError extends Error {
-  constructor(key: string) {
-    super(`Value ${key} is an invalid key. It must be a string value.`);
-  }
-}
+import { Config, HTTP_CACHE_CONFIG } from '../providers';
 
 /**
  * Network Cache Interceptor
@@ -24,7 +18,7 @@ export class InvalidRequestKeyError extends Error {
  *
  * The conditional flow:
  *
- *  - If: finder.ttl returns _any_ integer:
+ *  - If: finder returns a string key and integer TTL.
  *    - Attempt to fetch previous response from cache.
  *    - If cached response found found:
  *      - Return cached response.
@@ -47,10 +41,10 @@ export class CacheInterceptor implements HttpInterceptor {
     req: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    const ttl: number = this.config.finder.ttl(req);
+    const { key, ttl } = this.config.finder(req);
 
-    if (Number.isInteger(ttl)) {
-      return this.cacheRequest(req, next, ttl);
+    if (typeof key === 'string' && Number.isInteger(ttl)) {
+      return this.cacheRequest(req, next, key, ttl);
     } else {
       return next.handle(req);
     }
@@ -59,9 +53,9 @@ export class CacheInterceptor implements HttpInterceptor {
   private cacheRequest(
     req: HttpRequest<any>,
     next: HttpHandler,
+    key: string,
     ttl: number
   ): Observable<HttpEvent<any>> {
-    const key: string = this.getKey(req);
     const cachedResponse: HttpResponse<any> = this.cache.get(key);
 
     if (cachedResponse) {
@@ -75,19 +69,5 @@ export class CacheInterceptor implements HttpInterceptor {
         })
       );
     }
-  }
-
-  private getKey(req: HttpRequest<any>): string {
-    const key: string = this.config.finder.key(req);
-
-    if (key && typeof key === 'string') {
-      return key;
-    } else {
-      throw new InvalidRequestKeyError(key);
-    }
-  }
-
-  private getTtl(req: HttpRequest<any>): number {
-    return this.config.finder.ttl(req);
   }
 }

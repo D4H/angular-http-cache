@@ -1,8 +1,8 @@
-export * from './lib/cache.module';
+export * from './lib/http-cache.module';
 export * from './lib/interceptors';
 
 export {
   Config as HttpCacheConfig,
-  Finder,
+  RequestCache as HttpRequestCache,
   HTTP_CACHE_CONFIG
 } from './lib/providers';
