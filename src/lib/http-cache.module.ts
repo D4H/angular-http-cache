@@ -1,9 +1,9 @@
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ModuleWithProviders, NgModule } from '@angular/core';
 
-import { CacheInterceptor } from './interceptors';
-import { CacheService } from './services';
-import { Config, HTTP_CACHE_CONFIG, defaultConfig } from './providers';
+import { CacheInterceptor } from './interceptors/cache.interceptor';
+import { CacheService } from './services/cache.service';
+import { Config, HTTP_CACHE_CONFIG, defaultConfig } from './providers/interceptor.provider';
 
 @NgModule({
   providers: [

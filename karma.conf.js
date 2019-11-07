@@ -37,7 +37,7 @@ module.exports = config => {
       'karma-mocha-reporter'
     ],
     mochaReporter: {
-      // ignoreSkipped: true,
+      ignoreSkipped: true,
       showDiff: true
     },
     coverageIstanbulReporter: {

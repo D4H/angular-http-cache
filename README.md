@@ -1,11 +1,14 @@
-[![Codeship Status for D4H/api-angular](https://app.codeship.com/projects/3862bfd0-911f-0137-6172-7e8373628817/status?branch=master)](https://app.codeship.com/projects/356368)
+[![GitHubStatus for D4H/angular-http-cache](https://github.com/d4h/decisions-mobile-apps/workflows/Test%20@d4h/decisions-mobile-apps/badge.svg)](https://www.npmjs.com/package/@d4h/angular-http-cache)
 ![npm](https://img.shields.io/npm/v/@d4h/angular-http-cache.svg)
 
 # @d4h/angular-http-cache
 
-angular-http-cache is a network caching [interceptor](https://angular.io/guide/http#http-interceptors) for Angular's [HttpClient](https://angular.io/guide/http). It works by storing request success request responses in an internal cache, and returning this response from the cache so long as the TTL has not expired.
+angular-http-cache offers a pair of tools:
 
-You really should not ever have need to use this interceptor. Conventional [HTTP cache mechanisms](https://developer.mozilla.org/en-US/docs/Web/HTTP/Caching) are frankly superior, and you should only have to resort to this interceptor in special circumstances. What these are you will know best yourself.
+- A network caching [interceptor](https://angular.io/guide/http#http-interceptors) for Angular's [HttpClient](https://angular.io/guide/http). It works by storing request success request responses in an internal cache, and returning this response from the cache so long as the TTL has not expired.
+- An [Intersection Observer](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API) service to test for element visibility.
+
+You really should not ever have need to either of these tools. Conventional [HTTP cache mechanisms](https://developer.mozilla.org/en-US/docs/Web/HTTP/Caching) are frankly superior to the interceptor, and [ng-lazyload-image](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API) offers more robust lazy loading. You should only have to resort these tools in special circumstances. What these are you will know best yourself.
 
 ## Installation
 
@@ -63,6 +66,32 @@ export const config: HttpCacheConfig = {
   ]
 })
 export class AppInterceptorModule {}
+```
+
+## Element Interserction Observer Service
+`IntersectionService` is quite straigtfoward: import it and pass in any [`ElementRef`](https://angular.io/api/core/ElementRef). In the below example `GooseComponent` performs `mischief` when it is visible.
+
+```typescript
+import { IntersectionService } from '@d4h/angular-http-cache';
+
+export class GooseComponent implements OnInit {
+  mischief$: Observable<Mischief>;
+
+  constructor(
+    private readonly gooseService: GooseService,
+    private readonly host: ElementRef,
+    private readonly intersectionService: IntersectionService
+  ) {}
+
+  ngOnInit(): void {
+    this.mischief$ = this.intersectionService.visible(this.host).pipe(
+      filter(Boolean),
+      switchMap(() => this.gooseService.mischief(this.goose).pipe(
+        startWith({ type: 'honk' })
+      )),
+    );
+  }
+}
 ```
 
 ## Support and Feedback

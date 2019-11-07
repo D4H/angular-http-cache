@@ -4,8 +4,8 @@ import { Injectable, Inject, Optional } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { mergeMap, take, tap } from 'rxjs/operators';
 
-import { CacheService } from '../services';
-import { Config, HTTP_CACHE_CONFIG } from '../providers';
+import { CacheService } from '../services/cache.service';
+import { Config, HTTP_CACHE_CONFIG } from '../providers/interceptor.provider';
 
 /**
  * Network Cache Interceptor
