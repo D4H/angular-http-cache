@@ -53,17 +53,14 @@ export class IntersectionService {
 
   visible(element: ElementRef, options?: IntersectionOptions): Observable<boolean> {
     const elementVisible$: Observable<boolean>
-      = Observable.create(this.elementSubscriber(element, options)).pipe(
-        mergeMap((entries: Array<IntersectionObserverEntry>) => entries),
-        pluck('isIntersecting'),
-        distinctUntilChanged()
-      );
+    = new Observable(this.elementSubscriber(element, options)).pipe(
+      mergeMap((entries: Array<IntersectionObserverEntry>) => entries),
+      pluck('isIntersecting'),
+      distinctUntilChanged()
+    );
 
-    return combineLatest(
-      this.pageVisible$,
-      elementVisible$,
-      (pageVisible, elementVisible): boolean => Boolean(pageVisible && elementVisible)
-    ).pipe(
+    return combineLatest([this.pageVisible$, elementVisible$]).pipe(
+      map((results: Array<boolean>): boolean => results.every(result => result)),
       distinctUntilChanged()
     );
   }
